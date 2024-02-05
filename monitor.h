@@ -1,4 +1,4 @@
-#include <systemc>
+#include <systemc.h>
 #include <iostream>
 
 #ifndef EA_MONITOR_H
@@ -16,7 +16,7 @@ SC_MODULE(Monitor) {
 
     // Method to display the best solution
     void display_result();
-    
+
     // Constructor
     SC_CTOR(Monitor) {
         SC_METHOD(display_result);

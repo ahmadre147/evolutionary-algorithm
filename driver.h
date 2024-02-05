@@ -1,4 +1,4 @@
-#include <systemc>
+#include <systemc.h>
 
 #ifndef EA_DRIVER_H
 #define EA_DRIVER_H

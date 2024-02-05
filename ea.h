@@ -7,6 +7,8 @@
 #define POPULATION_SIZE 50
 #define MUTATION_RATE 5
 
+#define INDIVIDUAL_SIZE 9 // Number of items in the knapsack problem
+
 using namespace sc_core;
 using namespace sc_dt;
 
@@ -22,6 +24,7 @@ SC_MODULE(EvolutionaryAlgorithm) {
     bool population[POPULATION_SIZE][INDIVIDUAL_SIZE]; // Population array
     bool offspring[POPULATION_SIZE][INDIVIDUAL_SIZE]; // Offspring array
     sc_uint<8> fitness[POPULATION_SIZE]; // Fitness array
+    bool best_solution[INDIVIDUAL_SIZE];  // Add this line for best solution array
 
     // Events
     sc_event iteration_done;

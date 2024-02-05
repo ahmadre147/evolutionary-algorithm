@@ -11,18 +11,15 @@ int sc_main(int argc, char* argv[]) {
     Driver driver("driver");
     driver.fitness_output(fitness_input);
     driver.read(read);
-    driver.done(done);
     for (int i = 0; i < INDIVIDUAL_SIZE; ++i) {
         driver.solution_output[i](solution_output[i]);
     }
 
     EvolutionaryAlgorithm ea("ea");
     ea.fitness_input(fitness_input);
+    ea.solution_output(solution_output);
     ea.read(read);
     ea.done(done);
-    for (int i = 0; i < INDIVIDUAL_SIZE; ++i) {
-        ea.solution_output[i](solution_output[i]);
-    }
 
     Monitor monitor("monitor");
     monitor.fitness_input(fitness_input);
