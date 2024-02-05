@@ -1,43 +1,34 @@
 #include <systemc>
-#include "driver.h" // Assuming you have a driver for EA
-#include "monitor.h" // Assuming you have a monitor for EA
-#include "ea.h" // Include your Evolutionary Algorithm module
+#include "driver.h"
+#include "ea.h"
+#include "monitor.h"
 
 int sc_main(int argc, char* argv[]) {
+    sc_signal<sc_uint<8>> fitness_input;
+    sc_signal<bool> read, done;
+    sc_signal<bool> solution_output[INDIVIDUAL_SIZE];
 
-    sc_signal<sc_uint<8>> input_signal1;
-    sc_signal<sc_uint<8>> input_signal2;
-    sc_signal<sc_uint<8>> input_signal3;
-    sc_signal<bool> output_signal1;
-    sc_signal<sc_uint<8>> output_signal2;
-    sc_signal<bool> control_signal1;
-    sc_signal<bool> control_signal2;
-
-    driver d("driver");
-    d.input_signal1(input_signal1);
-    d.input_signal2(input_signal2);
-    d.input_signal3(input_signal3);
-    d.output_signal1(output_signal1);
-    d.output_signal2(output_signal2);
-    d.control_signal1(control_signal1);
-    d.control_signal2(control_signal2);
+    Driver driver("driver");
+    driver.fitness_output(fitness_input);
+    driver.read(read);
+    driver.done(done);
+    for (int i = 0; i < INDIVIDUAL_SIZE; ++i) {
+        driver.solution_output[i](solution_output[i]);
+    }
 
     EvolutionaryAlgorithm ea("ea");
-    ea.input_signal1(input_signal1);
-    ea.input_signal2(input_signal2);
-    ea.input_signal3(input_signal3);
-    ea.output_signal1(output_signal1);
-    ea.output_signal2(output_signal2);
-    ea.control_signal1(control_signal1);
-    ea.control_signal2(control_signal2);
+    ea.fitness_input(fitness_input);
+    ea.read(read);
+    ea.done(done);
+    for (int i = 0; i < INDIVIDUAL_SIZE; ++i) {
+        ea.solution_output[i](solution_output[i]);
+    }
 
-    monitor m("monitor");
-    m.output_signal1(output_signal1);
-    m.output_signal2(output_signal2);
-    m.control_signal1(control_signal1);
-    m.control_signal2(control_signal2);
+    Monitor monitor("monitor");
+    monitor.fitness_input(fitness_input);
+    monitor.solution_output(solution_output);
 
-    sc_start(200, SC_NS);
+    sc_start();
 
-    return 0; // End
+    return 0;
 }

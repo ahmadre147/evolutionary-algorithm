@@ -1,20 +1,32 @@
-#include <systemc.h>
-#include "ea.h"
+#include <systemc>
 
-SC_MODULE(driver) {
-    // Ports for the evolutionary algorithm
-    sc_out<sc_uint<8>> v;
-    sc_out<sc_uint<8>> w;
-    sc_out<sc_uint<8>> W;
-    sc_out<sc_uint<8>> n;
-    sc_in<bool> x;
-    sc_in<sc_uint<8>> f;
-    sc_out<bool> read;
-    sc_in<bool> done;
+#ifndef EA_DRIVER_H
+#define EA_DRIVER_H
 
-    void drive();
+#define INDIVIDUAL_SIZE 9
 
-    SC_CTOR(driver) {
-        SC_THREAD(drive);
+using namespace sc_core;
+using namespace sc_dt;
+
+SC_MODULE(Driver) {
+    // Ports
+    sc_out<bool> read; // Signal to trigger reading input
+    sc_out<bool> reset; // Signal to reset the algorithm
+    sc_out<bool> initialize; // Signal to initialize the algorithm
+    sc_out<bool> start_iteration; // Signal to start each iteration
+    sc_out<sc_uint<8>> fitness_output; // Output fitness value
+    sc_out<bool> solution_output[INDIVIDUAL_SIZE]; // Output solution vector
+
+    // Events
+    sc_event initialization_done;
+
+    // Methods
+    void generate_input();
+
+    // Constructor
+    SC_CTOR(Driver) {
+        SC_THREAD(generate_input);
     }
 };
+
+#endif // EA_DRIVER_H

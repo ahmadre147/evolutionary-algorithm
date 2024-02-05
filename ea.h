@@ -5,6 +5,7 @@
 
 #define MAX_GENERATIONS 100
 #define POPULATION_SIZE 50
+#define MUTATION_RATE 5
 
 using namespace sc_core;
 using namespace sc_dt;
@@ -18,8 +19,9 @@ SC_MODULE(EvolutionaryAlgorithm) {
     sc_out<bool> done; // Pulse when done
 
     // Internal signals
-    sc_uint<8> fitness[MAX_GENERATIONS]; // Fitness array
-    bool solution[MAX_GENERATIONS]; // Best solution array
+    bool population[POPULATION_SIZE][INDIVIDUAL_SIZE]; // Population array
+    bool offspring[POPULATION_SIZE][INDIVIDUAL_SIZE]; // Offspring array
+    sc_uint<8> fitness[POPULATION_SIZE]; // Fitness array
 
     // Events
     sc_event iteration_done;
@@ -44,11 +46,11 @@ SC_MODULE(EvolutionaryAlgorithm) {
         SC_THREAD(read_input);
         sensitive << read.pos();
         SC_METHOD(reset);
-        sensitive << data_ready;
+        sensitive << input_done;
         SC_METHOD(initialize);
         sensitive << reset_done;
         SC_METHOD(iterate);
-        sensitive << init_done;
+        sensitive << iteration_done;
         SC_THREAD(write_output);
     }
 };

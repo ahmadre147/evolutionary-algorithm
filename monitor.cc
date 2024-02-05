@@ -3,14 +3,13 @@
 
 using namespace std;
 
-void monitor::monita() {
-    while (true) {
-        wait();
-        wait(2, SC_NS);
-        while (done.read()) {
-            cout << x.read() << " ";
-            wait(2, SC_NS);
+void monitor::display_result() {
+        if (done.read()) {
+            std::cout << "Best Fitness: " << best_fitness.read() << std::endl;
+            std::cout << "Best Solution: ";
+            for (int i = 0; i < INDIVIDUAL_SIZE; ++i) {
+                std::cout << best_solution[i].read() << " ";
+            }
+            std::cout << std::endl;
         }
-        cout << endl << "f = " << f.read() << endl;
     }
-}

@@ -1,24 +1,40 @@
 #include "driver.h"
 
-void driver::drive() {
-    auto vv = std::vector<sc_uint<8>>{ 5, 6, 7, 9 };
-    auto wv = std::vector<sc_uint<8>>{ 1, 2, 1, 4 };
-    auto count = vv.size();
-    auto max_weight = 5;
+void Driver::generate_input() {
+    // Example data for the knapsack problem
+    sc_uint<8> fitness_values[4] = {30, 25, 35, 40};
+    bool solutions[4][INDIVIDUAL_SIZE] = {
+        {1, 1, 0, 0, 1, 0, 1, 0, 1},
+        {0, 1, 1, 0, 1, 0, 0, 1, 0},
+        {1, 0, 0, 1, 0, 1, 1, 0, 0},
+        {0, 0, 1, 1, 1, 0, 1, 1, 1}
+    };
 
-    n.write(count);
-    W.write(max_weight);
-    read.write(true);
-    wait(2, SC_NS);
+    wait(5, SC_NS); // Initial delay
+
+    // Send data to the algorithm
+    reset.write(true);
     read.write(false);
+    initialize.write(false);
+    start_iteration.write(false);
     wait(2, SC_NS);
 
-    for (unsigned int i = 0; i < count; i++) {
-        v.write(vv[i]);
-        w.write(wv[i]);
-        read.write(true);
+    reset.write(false);
+    wait(1, SC_NS);
+
+    // Send fitness values and solutions
+    for (int i = 0; i < 4; ++i) {
+        fitness_output.write(fitness_values[i]);
+        for (int j = 0; j < INDIVIDUAL_SIZE; ++j) {
+            solution_output[j].write(solutions[i][j]);
+        }
+
+        start_iteration.write(true);
         wait(2, SC_NS);
-        read.write(false);
-        wait(2, SC_NS);
+
+        start_iteration.write(false);
+        wait(1, SC_NS);
     }
+
+    initialization_done.notify(); // Notify that initialization is done
 }

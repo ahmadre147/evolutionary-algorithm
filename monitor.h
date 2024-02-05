@@ -1,14 +1,27 @@
-#include <systemc.h>
+#include <systemc>
+#include <iostream>
 
-SC_MODULE(monitor) {
-    void monita();
+#ifndef EA_MONITOR_H
+#define EA_MONITOR_H
 
-    sc_in<bool> x;
-    sc_in<sc_uint<8>> f;
-    sc_in<bool> done;
+using namespace sc_core;
+using namespace sc_dt;
 
-    SC_CTOR(monitor) {
-        SC_THREAD(monita);
-        sensitive << done.pos();
+SC_MODULE(Monitor) {
+    // Ports
+    sc_in<bool> done; // Indicates when the algorithm is done
+    sc_in<sc_uint<8>> best_fitness; // Best fitness value
+    sc_in<bool> best_solution[INDIVIDUAL_SIZE]; // Best solution vector
+
+
+    // Method to display the best solution
+    void display_result();
+    
+    // Constructor
+    SC_CTOR(Monitor) {
+        SC_METHOD(display_result);
+        sensitive << done;
     }
 };
+
+#endif // EA_MONITOR_H
