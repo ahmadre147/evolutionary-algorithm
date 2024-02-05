@@ -1,31 +1,41 @@
 #include <systemc>
-#include "driver.h"
 #include "ea.h"
 #include "monitor.h"
+#include "driver.h"
 
 int sc_main(int argc, char* argv[]) {
-    sc_signal<sc_uint<8>> fitness_input;
-    sc_signal<bool> read, done;
-    sc_signal<bool> solution_output[INDIVIDUAL_SIZE];
+    // Signals
+    sc_signal<sc_uint<8>> v;
+    sc_signal<sc_uint<8>> w;
+    sc_signal<sc_uint<8>> W;
+    sc_signal<bool> x;
+    sc_signal<sc_uint<8>> f;
+    sc_signal<bool> read;
+    sc_signal<bool> done;
 
+    // Create instances
     Driver driver("driver");
-    driver.fitness_output(fitness_input);
+    driver.v(v);
+    driver.w(w);
+    driver.W(W);
+    driver.x(x);
+    driver.f(f);
     driver.read(read);
-    for (int i = 0; i < INDIVIDUAL_SIZE; ++i) {
-        driver.solution_output[i](solution_output[i]);
-    }
+    driver.done(done);
 
-    EvolutionaryAlgorithm ea("ea");
-    ea.fitness_input(fitness_input);
-    ea.solution_output(solution_output);
+    EvolutionaryAlgorithm ea("evolutionary_algorithm");
+    ea.fitness_input(f);
+    ea.solution_output(x);
     ea.read(read);
     ea.done(done);
 
     Monitor monitor("monitor");
-    monitor.fitness_input(fitness_input);
-    monitor.solution_output(solution_output);
+    monitor.f(f);
+    monitor.x(x);
+    monitor.done(done);
 
-    sc_start();
+    // Start simulation
+    sc_start(200, sc_core::SC_NS);
 
     return 0;
 }

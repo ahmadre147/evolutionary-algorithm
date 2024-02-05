@@ -3,13 +3,19 @@
 
 using namespace std;
 
-void monitor::display_result() {
-        if (done.read()) {
-            std::cout << "Best Fitness: " << best_fitness.read() << std::endl;
-            std::cout << "Best Solution: ";
-            for (int i = 0; i < INDIVIDUAL_SIZE; ++i) {
-                std::cout << best_solution[i].read() << " ";
-            }
-            std::cout << std::endl;
+void Monitor::monitor_output() {
+        while (true) {
+            wait(done.posedge_event());
+            // Output solution and fitness
+            std::cout << "Solution: ";
+            print_solution();
+            std::cout << "Fitness: " << f.read() << std::endl;
         }
+    }
+
+void Monitor::print_solution() {
+        for (int i = 0; i < 9; ++i) {
+            std::cout << x.read() << " ";
+        }
+        std::cout << std::endl;
     }

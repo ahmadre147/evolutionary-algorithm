@@ -1,40 +1,41 @@
 #include "driver.h"
 
 void Driver::generate_input() {
-    // Example data for the knapsack problem
-    sc_uint<8> fitness_values[4] = {30, 25, 35, 40};
-    bool solutions[4][INDIVIDUAL_SIZE] = {
-        {1, 1, 0, 0, 1, 0, 1, 0, 1},
-        {0, 1, 1, 0, 1, 0, 0, 1, 0},
-        {1, 0, 0, 1, 0, 1, 1, 0, 0},
-        {0, 0, 1, 1, 1, 0, 1, 1, 1}
-    };
+        while (true) {
+            wait();
+            // Set your item values, weights, and knapsack capacity
+            v.write(6); w.write(2); W.write(20);
+            wait();
+            // Set other items or change values as needed
+            // Item 2
+            v.write(5); w.write(3);
+            wait();
+            // Item 3
+            v.write(8); w.write(6);
+            wait();
+            // Item 4
+            v.write(9); w.write(7);
+            wait();
+            // Item 5
+            v.write(6); w.write(5);
+            wait();
+            // Item 6
+            v.write(7); w.write(9);
+            wait();
+            // Item 7
+            v.write(3); w.write(3);
+            wait();
+            // Item 8
+            v.write(6); w.write(4);
+            wait();
+            // Item 9
+            v.write(8); w.write(5);
+            wait();
 
-    wait(5, SC_NS); // Initial delay
-
-    // Send data to the algorithm
-    reset.write(true);
-    read.write(false);
-    initialize.write(false);
-    start_iteration.write(false);
-    wait(2, SC_NS);
-
-    reset.write(false);
-    wait(1, SC_NS);
-
-    // Send fitness values and solutions
-    for (int i = 0; i < 4; ++i) {
-        fitness_output.write(fitness_values[i]);
-        for (int j = 0; j < INDIVIDUAL_SIZE; ++j) {
-            solution_output[j].write(solutions[i][j]);
+            // Notify the EA that data is ready
+            read.write(true);
+            // Wait for a response
+            wait(done.posedge_event());
+            read.write(false);
         }
-
-        start_iteration.write(true);
-        wait(2, SC_NS);
-
-        start_iteration.write(false);
-        wait(1, SC_NS);
     }
-
-    initialization_done.notify(); // Notify that initialization is done
-}
