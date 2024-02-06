@@ -15,8 +15,12 @@ using namespace sc_dt;
 
 SC_MODULE(EvolutionaryAlgorithm) {
     // Ports
-    sc_in<sc_uint<8>> fitness_input; // Fitness serial input
-    sc_out<bool> solution_output;    // Best solution serial output
+    sc_in<sc_uint<8>> v; // value serial input
+    sc_in<sc_uint<8>> w; // weight serial input
+    sc_in<sc_uint<8>> W; // maximum weight
+    sc_in<sc_uint<8>> n; // number of items
+    sc_out<bool> x; // best solution serial output
+    sc_out<sc_uint<8>> f; // objective function value
     // Synchronization ports
     sc_in<bool> read; // Read input on each rising edge
     sc_out<bool> done; // Pulse when done
@@ -39,7 +43,7 @@ SC_MODULE(EvolutionaryAlgorithm) {
     void generate_initial_population();
     void update_best_solution();
     void reset();
-    sc_uint<16> calculate_fitness(bool solution[]);
+    sc_uint<16> calculate_fitness(bool x[]);
     void crossover();
     void mutate();
     void iterate();

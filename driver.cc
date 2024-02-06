@@ -1,41 +1,24 @@
 #include "driver.h"
 
-void Driver::generate_input() {
-        while (true) {
-            wait();
-            // Set your item values, weights, and knapsack capacity
-            v.write(6); w.write(2); W.write(20);
-            wait();
-            // Set other items or change values as needed
-            // Item 2
-            v.write(5); w.write(3);
-            wait();
-            // Item 3
-            v.write(8); w.write(6);
-            wait();
-            // Item 4
-            v.write(9); w.write(7);
-            wait();
-            // Item 5
-            v.write(6); w.write(5);
-            wait();
-            // Item 6
-            v.write(7); w.write(9);
-            wait();
-            // Item 7
-            v.write(3); w.write(3);
-            wait();
-            // Item 8
-            v.write(6); w.write(4);
-            wait();
-            // Item 9
-            v.write(8); w.write(5);
-            wait();
+void driver::drive(void) {
+    auto vv = std::vector<sc_uint<8>>{ 6, 5, 8, 9, 6, 7, 3, 6, 8 };
+    auto wv = std::vector<sc_uint<8>>{ 2, 3, 6, 7, 5, 9, 3, 4, 5 };
+    auto count = vv.size();
+    auto max_weight = 9;
 
-            // Notify the EA that data is ready
-            read.write(true);
-            // Wait for a response
-            wait(done.posedge_event());
-            read.write(false);
-        }
+    n.write(count);
+    W.write(max_weight);
+    read.write(true);
+    wait(2, SC_NS);
+    read.write(false);
+    wait(2, SC_NS);
+
+    for (unsigned int i = 0; i < count; i++) {
+        v.write(vv[i]);
+        w.write(wv[i]);
+        read.write(true);
+        wait(2, SC_NS);
+        read.write(false);
+        wait(2, SC_NS);
     }
+}

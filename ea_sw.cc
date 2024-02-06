@@ -1,6 +1,24 @@
 #include "ea.h"
 #include <cmath> // for exp()
 
+void EvolutionaryAlgorithm::read_input() {
+    while (true) {
+        wait();
+        // Read inputs v, w, W, and n for each individual
+        for (unsigned int i = 0; i < POPULATION_SIZE; i++) {
+            wait();
+            for (unsigned int j = 0; j < INDIVIDUAL_SIZE; j++) {
+                if (j < n.read()) {
+                    population[i][j] = (v.read() / w.read()); // Example logic, modify accordingly
+                } else {
+                    population[i][j] = 0; // Padding zeros for unused dimensions
+                }
+            }
+        }
+        input_done.notify();
+    }
+}
+
 void EvolutionaryAlgorithm::update_best_solution() {
     // Find the index of the individual with the highest fitness
     unsigned int best_index = 0;
@@ -68,5 +86,15 @@ void EvolutionaryAlgorithm::iterate() {
 
         // Notify that one iteration is done
         iteration_done.notify();
+    }
+}
+
+void EvolutionaryAlgorithm::write_output() {
+    while (true) {
+        wait();
+        done.write(true);
+        x.write(population[0]);  // Output the best solution for simplicity
+        wait(); // Adjust timing based on your requirements
+        done.write(false);
     }
 }
